@@ -17,6 +17,7 @@ class Config:
     ADMAIN = os.environ.get('ADMAIN')
     POSTS_PER_PAGE = 20
     COMMENTS_PER_PAGE = 30
+    SLOW_DB_QUERY_TIME = 0.5
 
     @staticmethon
     def init_app(app):
