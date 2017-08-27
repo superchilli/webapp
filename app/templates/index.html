@@ -8,7 +8,7 @@
 </div>
 <div>
     {% if current_user.can(Permission.WRITE_ARTICLES) %}
-    {{ wff.quick_form(form) }}
+    {{ wtf.quick_form(form) }}
     {% endif %}
 </div>
 <div class="post-tabs">

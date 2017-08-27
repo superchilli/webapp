@@ -40,7 +40,7 @@ def index():
                     author=current_user._get_current_object())
         db.session.add(post)
         return redirect(url_for('.index'))
-    page = request.args.get('page', 1, tyep=int)
+    page = request.args.get('page', 1, type=int)
     show_followed = False
     if current_user.is_authenticated:
         show_followed=bool(request.cookies.get('show_followed', ''))
@@ -60,7 +60,7 @@ def index():
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
-    pagination = user.posts.order_by(Post.timestamp.decs()).paginate(
+    pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
         page, per_page=current_app.config['POSTS_PER_PAGE'],
         error_out=False)
     posts=pagination.items
@@ -80,11 +80,11 @@ def edit_profile():
         flash('Your porfile has been updated.')
         return redirect(url_for('.user', username=current_user.username))
     form.name.data=current_user.name
-    form.loacation.data=current_user.loacation
+    form.location.data=current_user.location
     form.about_me.data=current_user.about_me
     return render_template('edit_profile.html', form=form)
 
-@main.route('/edit-profile/<init:id>', methods=['GET','POST'])
+@main.route('/edit-profile/<int:id>', methods=['GET','POST'])
 @login_required
 @admin_required
 def edit_profile_admin(id):
@@ -143,7 +143,7 @@ def edit(id):
         db.session.add(post)
         flash('The post has been updated.')
         return redirect(url_for('.post', id=post.id))
-    form.body.data=post.data
+    form.body.data=post.body
     return render_template('edit_post.html', form=form)
 
 @main.route('/follow/<username>')

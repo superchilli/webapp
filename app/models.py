@@ -22,8 +22,8 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64), unique=True)
-    default = db.Column(db.Boolean, dafault=False, index=True)
-    permission = db.Column(db.Integer)
+    default = db.Column(db.Boolean, default=False, index=True)
+    permissions = db.Column(db.Integer)
     users = db.relationship('User', backref='role', lazy='dynamic')
 
     @staticmethod
@@ -44,7 +44,7 @@ class Role(db.Model):
             if role is None:
                 role=Role(name=r)
             role.permissions = roles[r][0]
-            role.defaulte = roles[r][1]
+            role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()
 
@@ -58,7 +58,7 @@ class Follow(db.Model):
                             primary_key = True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                             primary_key = True)
-    timestamp = db.Column(db.DateTime, dafault = datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
 
 class User(UserMixin, db.Model):
@@ -71,8 +71,8 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String(64))
     location = db.Column(db.String(64))
     about_me = db.Column(db.Text())
-    member_since = db.Column(db.DateTime(), dafault=datetime.utcnow)
-    last_seen=db.Column(db.DateTime(), dafault=datetime.utcnow)
+    member_since = db.Column(db.DateTime(), default=datetime.utcnow)
+    last_seen=db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash=db.Column(db.String(32))
     posts=db.relationship('Post', backref='author', lazy='dynamic')
     followed=db.relationship('Follow',
@@ -122,7 +122,7 @@ class User(UserMixin, db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email == current_app.config['ADMIN']:
+            if self.email == current_app.config['ADMAIN']:
                 self.role = Role.query.filter_by(permission=0xff).first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
@@ -139,7 +139,7 @@ class User(UserMixin, db.Model):
 
     @password.setter
     def password(self, password):
-        self.passwrod_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -154,7 +154,7 @@ class User(UserMixin, db.Model):
             data = s.loads(token)
         except:
             return False
-        if data.get('reset') != self.id
+        if data.get('reset') != self.id:
             return False
         self.password = new_password
         db.session.add(self)
@@ -290,7 +290,7 @@ class Post(db.Model):
             'body_html': self.body_html,
             'timestamp':self.timestamp,
             'author':url_for('api.get_user', id=self.author_id,
-                             _external=True)
+                             _external=True),
             'comments': url_for('api.get_post_comments', id=self.id,
                                 _external=True),
             'comment_count': self.comments.count()
@@ -314,7 +314,7 @@ class Comment(db.Model):
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     disabled = db.Column(db.Boolean)
-    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
 
     @staticmethod
@@ -327,7 +327,7 @@ class Comment(db.Model):
 
     def to_json(self):
         json_comment = {
-            'url': url_for('api.get_comment', id=self.id, _external=True)
+            'url': url_for('api.get_comment', id=self.id, _external=True),
             'post':url_for('api.get_post', id=self.id, _external=True),
             'body': self.body,
             'body_html': self.body_html,

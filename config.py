@@ -19,7 +19,7 @@ class Config:
     COMMENTS_PER_PAGE = 30
     SLOW_DB_QUERY_TIME = 0.5
 
-    @staticmethon
+    @staticmethod
     def init_app(app):
         pass
 
