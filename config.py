@@ -16,6 +16,7 @@ class Config:
     MAIL_SENDER = 'Superchilli Admin<somelovebg@hotmail.com>'
     ADMAIN = os.environ.get('ADMAIN')
     POSTS_PER_PAGE = 20
+    FOLLOWERS_PER_PAGE = 50
     COMMENTS_PER_PAGE = 30
     SLOW_DB_QUERY_TIME = 0.5
 
