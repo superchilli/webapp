@@ -1,13 +1,16 @@
+import os
 from flask import render_template, redirect, url_for, abort, flash, request,\
     current_app, make_response
 from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
+from werkzeug import secure_filename
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
-    CommentForm
+    CommentForm, UploadAvatarForm
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
+
 
 
 @main.after_app_request
@@ -83,6 +86,28 @@ def edit_profile():
     form.location.data=current_user.location
     form.about_me.data=current_user.about_me
     return render_template('edit_profile.html', form=form)
+
+@main.route('/upload-avatar', methods=['GET','POST'])
+@login_required
+def upload_avatar():
+    form = UploadAvatarForm()
+    if form.validate_on_submit():
+        avatar = request.files['avatar']
+        filename = secure_filename(avatar.filename)
+        UPLOAD_FOLDER = current_app.config['UPLOADS_FOLDER']
+        ALLOWED_EXTENTIONS = set(['jpg', 'png', 'jpeg', 'gif'])
+        flag = '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENTIONS
+        if not flag:
+            flash('Error file types.')
+            return redirect(url_for('.user', username=current_user.username))
+        avatar.save(os.path.join(UPLOAD_FOLDER, filename))
+        current_user.user_avatar = os.path.join('/Users/rose/webapp/app/uploads', filename)
+
+        db.session.add(current_user)
+        flash('Your avatar has been updated.')
+        return redirect(url_for('.user', username=current_user.username))
+    return render_template('upload_avatar.html', form=form)
+
 
 @main.route('/edit-profile/<int:id>', methods=['GET','POST'])
 @login_required

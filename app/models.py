@@ -74,6 +74,7 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     last_seen=db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash=db.Column(db.String(32))
+    user_avatar=db.Column(db.String(128), default=None)
     posts=db.relationship('Post', backref='author', lazy='dynamic')
     followed=db.relationship('Follow',
                              foreign_keys=[Follow.follower_id],

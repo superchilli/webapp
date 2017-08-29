@@ -7,7 +7,11 @@ Supperchilli - {{ user.username }}
 
 {% block page_content %}
 <div class="page-header">
+    {% if user.user_avatar %}
+    <img class="img-rounded profile-thumbnail" src = {{ user.user_avatar }}
+    {% else %}
     <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
+    {% endif %}
     <div class="profile-header">
         <h1>{{ user.username }}</h1>
         {% if user.name or user.location %}

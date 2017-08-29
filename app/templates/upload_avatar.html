@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Upload Avatar{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Change Your Avatar</h1>
+</div>
+<div class="col-md-4">
+<form method="POST" enctype="multipart/form-data">
+        {{ wtf.quick_form(form) }}
+</form>
+</div>
+{% endblock %}

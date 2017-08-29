@@ -3,7 +3,11 @@
     <li class="post">
         <div class="post-thumbnail">
             <a href="{{ url_for('.user', username=post.author.username) }}">
+                {% if post.author.user_avatar %}
+                <img class="img-rounded profile-thumbnail" src="{{ post.author.user_avatar }}"
+                     {% else %}
                 <img class="img-rounded profile-thumbnail" src="{{ post.author.gravatar(size=40) }}">
+                {% endif %}
             </a>
         </div>
         <div class="post-content">

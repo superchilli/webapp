@@ -19,6 +19,8 @@ class Config:
     FOLLOWERS_PER_PAGE = 50
     COMMENTS_PER_PAGE = 30
     SLOW_DB_QUERY_TIME = 0.5
+    UPLOADS_FOLDER= os.getcwd() + '/app/uploads'
+
 
     @staticmethod
     def init_app(app):
