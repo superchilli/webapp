@@ -19,7 +19,9 @@ class Config:
     FOLLOWERS_PER_PAGE = 50
     COMMENTS_PER_PAGE = 30
     SLOW_DB_QUERY_TIME = 0.5
-    UPLOADS_FOLDER= os.getcwd() + '/app/uploads'
+    UPLOAD_FOLDER_ROOT = os.path.dirname(os.path.abspath(__file__))
+    UPLOAD_FOLDER_PATH = 'app/static/uploads'
+    UPLOAD_FOLDER = os.path.join(UPLOAD_FOLDER_ROOT, UPLOAD_FOLDER_PATH)
 
 
     @staticmethod
