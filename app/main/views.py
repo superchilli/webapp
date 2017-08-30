@@ -6,7 +6,7 @@ from flask_sqlalchemy import get_debug_queries
 from werkzeug import secure_filename
 from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, PostForm,\
-    CommentForm, UploadAvatarForm
+    CommentForm, UploadAvatarForm, DeleteForm
 from .. import db
 from ..models import Permission, Role, User, Post, Comment
 from ..decorators import admin_required, permission_required
@@ -94,14 +94,14 @@ def upload_avatar():
     if form.validate_on_submit():
         avatar = request.files['avatar']
         filename = secure_filename(avatar.filename)
-        UPLOAD_FOLDER = current_app.config['UPLOADS_FOLDER']
+        UPLOAD_FOLDER = current_app.config['UPLOAD_FOLDER']
         ALLOWED_EXTENTIONS = set(['jpg', 'png', 'jpeg', 'gif'])
         flag = '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENTIONS
         if not flag:
             flash('Error file types.')
             return redirect(url_for('.user', username=current_user.username))
         avatar.save(os.path.join(UPLOAD_FOLDER, filename))
-        current_user.user_avatar = os.path.join('/Users/rose/webapp/app/uploads', filename)
+        current_user.user_avatar = os.path.join(UPLOAD_FOLDER, filename)
 
         db.session.add(current_user)
         flash('Your avatar has been updated.')
@@ -170,6 +170,22 @@ def edit(id):
         return redirect(url_for('.post', id=post.id))
     form.body.data=post.body
     return render_template('edit_post.html', form=form)
+
+@main.route('/delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete(id):
+    post = Post.query.get_or_404(id)
+    if current_user != post.author and \
+        not current_user.can(Permission.ADMINISTER):
+        abort(403)
+    form=DeleteForm()
+    if form.delete:
+        db.session.delete(post)
+        flash('You have delete the post.')
+        return redirect(url_for('.user', username=current_user.username))
+    return render_template('delete.html', form=form)
+
+
 
 @main.route('/follow/<username>')
 @login_required

@@ -61,3 +61,7 @@ class PostForm(FlaskForm):
 class CommentForm(FlaskForm):
     body = StringField('Enter your comment', validators=[Required()])
     submit = SubmitField('Submit')
+
+class DeleteForm(FlaskForm):
+    delete = SubmitField('Delete')
+    back = SubmitField('Back')

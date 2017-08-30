@@ -6,14 +6,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_pagedown import PageDown
 from config import config
-from flask——uploads import UploadSet, configure_uploads, IMAGES
+
 
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 pagedown = PageDown()
-photos = UploadSet('photos', IMAGES)
+
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -31,7 +31,6 @@ def create_app(config_name):
     login_manager.init_app(app)
     pagedown.init_app(app)
 
-    configure_uploads(app, photos)
 
     if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
         from flask_sslify import SSLify

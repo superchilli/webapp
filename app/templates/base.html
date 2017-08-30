@@ -35,7 +35,7 @@
         {% if current_user.is_authenticated %}
         <li class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                {% if user.user_avatar %}
+                {% if current_user.user_avatar %}
                     <img src="{{ current_user.user_avatar }}">
                     {% else %}
                 <img src="{{ current_user.gravatar(size=18) }}">
