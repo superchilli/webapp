@@ -21,5 +21,6 @@
 ![](https://github.com/superchilli/webapp/blob/master/app/static/upload_avatar.png?raw=true)  
 #### Change_password:  
 ![](https://github.com/superchilli/webapp/blob/master/app/static/change_password.png?raw=true)
-
+#### Post_editor:  
+![](https://github.com/superchilli/webapp/blob/master/app/static/post_edit.png?raw=true)  
 
